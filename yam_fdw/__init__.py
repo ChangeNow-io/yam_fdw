@@ -13,6 +13,7 @@ from bson.objectid import ObjectId
 from functools import partial
 
 import time
+import ssl
 
 from pymongo.son_manipulator import SONManipulator
 import json
@@ -57,7 +58,8 @@ class Yamfdw(ForeignDataWrapper):
         self.collection_name = options.get('collection', 'test')
 
         self.conn = MongoClient(host=self.host_name,
-                             port=self.port)
+                             port=self.port,
+                               ssl=True)
 
         self.auth_db = options.get('auth_db', self.db_name)
 
@@ -69,7 +71,7 @@ class Yamfdw(ForeignDataWrapper):
         self.db = getattr(self.conn, self.db_name)
         self.coll = getattr(self.db, self.collection_name)
 
-        self.debug = options.get('debug', False)
+        self.debug = options.get('debug', True)
 
         # if we need to validate or transform any fields this is a place to do it
         # we need column definitions for types to validate we're passing back correct types
